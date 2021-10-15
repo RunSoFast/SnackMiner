@@ -4,7 +4,7 @@
     <div style="display: flex;justify-content: center;margin-top: 150px">
       <el-card style="width: 400px">
         <div slot="header">
-          <span>登录</span>
+          <span>注册</span>
         </div>
         <table>
           <tr>
@@ -20,10 +20,10 @@
             <td>密码:</td>
             <td>
               <el-input
-                type="password"
                 v-model="user.password"
+                type="password"
                 placeholder="请输入密码"
-                @keydown.enter.native="doLogin"
+                @keydown.enter.native="doRigister"
               ></el-input>
               <!-- @keydown.enter.native="doLogin"当按下enter键的时候也会执行doLogin方法-->
             </td>
@@ -31,13 +31,11 @@
           <tr>
             <!-- 占两行-->
             <td colspan="2">
-              <!-- 点击事件的两种不同的写法v-on:click和 @click-->
-              <!--<el-button style="width: 300px" type="primary" v-on:click="doLogin">登录</el-button>-->
-              <el-button style="width: 100px" type="primary" @click="doRigister"
-                >前往注册</el-button
+              <el-button style="width: 100px" type="primary" @click="doReturn"
+                >返回</el-button
               >
-              <el-button style="width: 100px" type="primary" @click="doLogin"
-                >登录</el-button
+              <el-button style="width: 100px" type="primary" @click="doRigister"
+                >确定</el-button
               >
             </td>
           </tr>
@@ -51,7 +49,6 @@
 import axios from "axios";
 import url from "@/serviceAPI.config.js";
 export default {
-  //单页面中不支持前面的data:{}方式
   data() {
     //相当于以前的function data(){},这是es5之前的写法，新版本可以省略掉function
     return {
@@ -69,14 +66,14 @@ export default {
     };
   },
   methods: {
-    doLogin() {
-      //一点击登录按钮，这个方法就会执行
-      // alert(JSON.stringify(this.user)); //可以直接把this.user对象传给后端进行校验用户名和密码
-        axios({
-        url: url.login,
+    doReturn() {
+      this.$router.go(-1);
+    },
+    doRigister() {
+      axios({
+        url: url.registerUser,
         method: "post",
         data: {
-          
           userName: this.user.username,
           password: this.user.password
         }
@@ -87,9 +84,6 @@ export default {
         .catch(error => {
           console.log(error);
         });
-    },
-    doRigister() {
-      this.$router.push("/rigister");
     }
   }
 };
