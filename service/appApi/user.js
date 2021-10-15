@@ -8,6 +8,7 @@ router.get("/", async ctx => {
 });
 
 router.post("/register", async ctx => {
+  ctx.set('Access-Control-Allow-Origin',ctx.request.headers.origin)
   //取得Model
   console.log(ctx.request.body);
   const User = mongoose.model("User");
