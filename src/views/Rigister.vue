@@ -34,7 +34,7 @@
               <el-button style="width: 100px" type="primary" @click="doReturn"
                 >返回</el-button
               >
-              <el-button style="width: 100px" type="primary" @click="doRigister"
+              <el-button style="width: 100px" type="primary" @click="axiosRegisterUser"
                 >确定</el-button
               >
             </td>
@@ -48,6 +48,7 @@
 <script>
 import axios from "axios";
 import url from "@/serviceAPI.config.js";
+import { Toast } from "vant";
 export default {
   data() {
     //相当于以前的function data(){},这是es5之前的写法，新版本可以省略掉function
@@ -69,7 +70,7 @@ export default {
     doReturn() {
       this.$router.go(-1);
     },
-    doRigister() {
+    axiosRegisterUser() {
       axios({
         url: url.registerUser,
         method: "post",
@@ -80,8 +81,17 @@ export default {
       })
         .then(response => {
           console.log(response);
+          //如果返回code为200，代表注册成功，我们给用户作Toast提示
+          if (response.data.code == 200) {
+            Toast.success("注册成功");
+          } else {
+            console.log(response.data.message);
+            Toast.fail("注册失败");
+          }
+          console.log(response.data.code);
         })
         .catch(error => {
+          Toast.fail('注册失败')  
           console.log(error);
         });
     }
