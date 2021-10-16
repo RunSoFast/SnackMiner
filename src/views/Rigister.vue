@@ -37,7 +37,7 @@
               <el-button
                 style="width: 100px"
                 type="primary"
-                @click="axiosRegisterUser"
+                @click="registerAction"
                 :disabled="isDisabled"
                 >确定</el-button
               >
@@ -52,7 +52,6 @@
 <script>
 import axios from "axios";
 import url from "@/serviceAPI.config.js";
-import { Toast } from "vant";
 export default {
   data() {
     //相当于以前的function data(){},这是es5之前的写法，新版本可以省略掉function
@@ -68,7 +67,7 @@ export default {
         password: ""
         //为了登录方便，可以直接在这里写好用户名和密码的值
       },
-      isDisabled: false
+      isDisabled: false //防止重复点击注册按钮
     };
   },
   methods: {
@@ -87,21 +86,38 @@ export default {
       })
         .then(response => {
           console.log(response);
-          //如果返回code为200，代表注册成功，我们给用户作Toast提示
+          //如果返回code为200，代表注册成功，我们给用户作alert提示
           if (response.data.code == 200) {
-            Toast.success("注册成功");
+            alert("注册成功");
           } else {
             console.log(response.data.message);
-            Toast.fail("注册失败");
+            alert("注册失败");
           }
           console.log(response.data.code);
           this.isDisabled = false;
         })
         .catch(error => {
-          Toast.fail("注册失败");
+          alert("注册失败");
           console.log(error);
           this.isDisabled = false;
         });
+    },
+    checkForm() {
+      let isOk = true;
+      if (this.user.username.length < 4) {
+        alert("用户名不能小于4位");
+        isOk = false;
+      }
+      if (this.user.password.length < 6) {
+        alert("密码不能少于6位");
+        isOk = false;
+      }
+      return isOk;
+    },
+    registerAction() {
+      if (this.checkForm()) {
+        this.checkForm() && this.axiosRegisterUser();
+      }
     }
   }
 };
