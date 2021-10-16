@@ -34,7 +34,11 @@
               <el-button style="width: 100px" type="primary" @click="doReturn"
                 >返回</el-button
               >
-              <el-button style="width: 100px" type="primary" @click="axiosRegisterUser"
+              <el-button
+                style="width: 100px"
+                type="primary"
+                @click="axiosRegisterUser"
+                :disabled="isDisabled"
                 >确定</el-button
               >
             </td>
@@ -63,7 +67,8 @@ export default {
         username: "",
         password: ""
         //为了登录方便，可以直接在这里写好用户名和密码的值
-      }
+      },
+      isDisabled: false
     };
   },
   methods: {
@@ -71,6 +76,7 @@ export default {
       this.$router.go(-1);
     },
     axiosRegisterUser() {
+      this.isDisabled = true;
       axios({
         url: url.registerUser,
         method: "post",
@@ -89,10 +95,12 @@ export default {
             Toast.fail("注册失败");
           }
           console.log(response.data.code);
+          this.isDisabled = false;
         })
         .catch(error => {
-          Toast.fail('注册失败')  
+          Toast.fail("注册失败");
           console.log(error);
+          this.isDisabled = false;
         });
     }
   }
