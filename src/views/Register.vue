@@ -4,7 +4,7 @@
     <div style="display: flex;justify-content: center;margin-top: 150px">
       <el-card style="width: 400px">
         <div slot="header">
-          <span>登录</span>
+          <span>注册</span>
         </div>
         <table>
           <tr>
@@ -13,6 +13,9 @@
               <el-input
                 v-model="user.username"
                 placeholder="请输入用户名"
+                clearable
+                maxlength="12"
+                show-word-limit
               ></el-input>
             </td>
           </tr>
@@ -20,10 +23,14 @@
             <td>密码:</td>
             <td>
               <el-input
-                type="password"
                 v-model="user.password"
+                type="password"
                 placeholder="请输入密码"
-                @keydown.enter.native="doLogin"
+                @keydown.enter.native="registerAction"
+                show-password
+                clearable
+                maxlength="20"
+                show-word-limit
               ></el-input>
               <!-- @keydown.enter.native="doLogin"当按下enter键的时候也会执行doLogin方法-->
             </td>
@@ -31,19 +38,22 @@
           <tr>
             <!-- 占两行-->
             <td colspan="2">
-              <!-- 点击事件的两种不同的写法v-on:click和 @click-->
-              <!--<el-button style="width: 300px" type="primary" v-on:click="doLogin">登录</el-button>-->
-              <el-button style="width: 100px" type="primary" @click="doRigister"
-                >前往注册</el-button
+              <el-button style="width: 100px" type="primary" @click="doReturn"
+                >返回</el-button
               >
-              <el-button style="width: 100px" type="primary" @click="doLogin"
-                >登录</el-button
+              <el-button
+                style="width: 100px"
+                type="primary"
+                @click="registerAction"
+                :disabled="isDisabled"
+                >确定</el-button
               >
             </td>
           </tr>
         </table>
       </el-card>
     </div>
+    
   </div>
 </template>
 
@@ -51,7 +61,6 @@
 import axios from "axios";
 import url from "@/serviceAPI.config.js";
 export default {
-  //单页面中不支持前面的data:{}方式
   data() {
     //相当于以前的function data(){},这是es5之前的写法，新版本可以省略掉function
     return {
@@ -62,34 +71,62 @@ export default {
       //可是一般来说可能希望在不同的组件中引用的时候，使用不同的值，所以这里要用return
       //这样在A组件和B组件分别引用这个变量的时候是不会互相影响的
       user: {
-        username: "zhangsan",
-        password: "123456"
+        username: "",
+        password: ""
         //为了登录方便，可以直接在这里写好用户名和密码的值
-      }
+      },
+      isDisabled: false //防止重复点击注册按钮
     };
   },
   methods: {
-    doLogin() {
-      //一点击登录按钮，这个方法就会执行
-      // alert(JSON.stringify(this.user)); //可以直接把this.user对象传给后端进行校验用户名和密码
-        axios({
-        url: url.login,
+    doReturn() {
+      this.$router.go(-1);
+    },
+    axiosRegisterUser() {
+      this.isDisabled = true;
+      axios({
+        url: url.registerUser,
         method: "post",
         data: {
-          
           userName: this.user.username,
           password: this.user.password
         }
       })
         .then(response => {
-          console.log(response);
+          // console.log(response);
+          //如果返回code为200，代表注册成功，我们给用户作alert提示
+          if (response.data.code == 200) {
+            alert("注册成功");
+            this.$router.replace("/");
+          } else {
+            // console.log(response.data.message);
+            alert("注册失败，用户名已存在");
+          }
+          // console.log(response.data.code);
+          this.isDisabled = false;
         })
         .catch(error => {
+          alert("注册失败");
           console.log(error);
+          this.isDisabled = false;
         });
     },
-    doRigister() {
-      this.$router.push("/rigister");
+    checkForm() {
+      let isOk = true;
+      if (this.user.username.length < 4) {
+        alert("用户名不能小于4位");
+        isOk = false;
+      }
+      if (this.user.password.length < 6) {
+        alert("密码不能少于6位");
+        isOk = false;
+      }
+      return isOk;
+    },
+    registerAction() {
+      if (this.checkForm()) {
+        this.checkForm() && this.axiosRegisterUser();
+      }
     }
   }
 };

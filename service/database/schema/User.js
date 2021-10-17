@@ -21,7 +21,7 @@ const userSchema = new Schema(
 //每次存储数据时都要执行
 userSchema.pre("save", function(next) {
   //let user = this
-  console.log(this);
+  // console.log(this);
   bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
     if (err) return next(err);
     bcrypt.hash(this.password, salt, (err, hash) => {
@@ -31,6 +31,18 @@ userSchema.pre("save", function(next) {
     });
   });
 });
+
+userSchema.methods = {
+  //密码比对的方法
+  comparePassword: (_password, password) => {
+    return new Promise((resolve, reject) => {
+      bcrypt.compare(_password, password, (err, isMatch) => {
+        if (!err) resolve(isMatch);
+        else reject(err);
+      });
+    });
+  }
+};
 
 //发布模型,是具备某张表操作能力的一个集合
 mongoose.model("User", userSchema);
