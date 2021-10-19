@@ -24,8 +24,6 @@ router.use("/user", user.routes());
 app.use(router.routes()); //注册路由中间件
 app.use(router.allowedMethods()); // 当有不被允许的方法的请求时，默认响应结果和设置状态码
 
-//立即执行函数
-
 app.use(async ctx => {
   ctx.body = "<h1>hello Koa2</h1>";
 });

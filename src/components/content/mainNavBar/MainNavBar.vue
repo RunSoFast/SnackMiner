@@ -22,13 +22,13 @@
           <el-menu-item index="2-4-3">面包蛋糕</el-menu-item>
         </el-submenu>
       </el-submenu> -->
-      <el-menu-item index="2">点餐</el-menu-item>
-      <el-menu-item index="3"
-        ><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item
-      >
+      <el-menu-item index="2" @click="$router.push('/management')">点餐</el-menu-item>
+      <el-menu-item index="3" @click="$router.push('/management')">购物车</el-menu-item>
+      <el-menu-item index="4" v-show="isgoodsmanage" @click="$router.push('/management')">商品后台管理</el-menu-item>
+
       <span class="right">
         <span v-if="!islogin">
-          <el-menu-item index="4"
+          <el-menu-item index="5"
             ><el-button
               type="text"
               @click="changeDialogVisible"
@@ -38,7 +38,7 @@
           >
         </span>
         <span v-else>
-          <el-menu-item index="5">
+          <el-menu-item index="6">
             <el-dropdown>
               <span class="el-dropdown-link">
                 {{ user.username
@@ -105,6 +105,7 @@
 <script>
 import axios from "axios";
 import url from "@/serviceAPI.config.js";
+import {removeitem} from '@/utils/storage.js'
 export default {
   name: "MainNavBar",
   data() {
@@ -118,7 +119,8 @@ export default {
       activeIndex2: "1",
       dialogVisible: false,
       islogin: false,
-      isDisabled: false //防止重复点击登录按钮
+      isDisabled: false, //防止重复点击登录按钮
+      isgoodsmanage: false
     };
   },
   methods: {
@@ -155,16 +157,21 @@ export default {
           if (response.data.code == 200) {
             if (response.data.message == true) {
               new Promise((resolve, reject) => {
-                // console.log(response.data.token);
-                localStorage.token =  response.data.token;
+                // 保存token到vuex和localstorage中
+                this.$store.commit('mSetTokenInfo', response.data.token)
                 setTimeout(() => {
                   resolve();
-                }, 500);
+                }, 300);
               })
                 .then(() => {
                   this.$message.success("登陆成功");
                   this.islogin = true;
                   this.dialogVisible = false;
+                  // 只有管理员登录才能在导航栏显示商品后台管理按钮
+                  if (this.user.username!='admin') {
+                    this.isgoodsmanage = false;
+                  } else this.isgoodsmanage = true;
+                  // 登陆成功，跳转到主页
                   this.$router.replace("/").catch(() => {});
                 })
                 .catch(err => {
@@ -188,10 +195,13 @@ export default {
     },
     doRigister() {
       this.dialogVisible = false;
-      this.$router.push("/register");
+      this.$router.push("/user/register");
     },
     quitlogin() {
       this.islogin = false;
+      // removeitem("tokenInfo");
+      //清空token
+      this.$store.commit('del_token',tokenInfo)
     }
   }
 };

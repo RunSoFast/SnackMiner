@@ -1,6 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "views/Home.vue";
+import store from "@/store";
+import { getItem } from "@/utils/storage";
 
 Vue.use(VueRouter);
 
@@ -14,19 +16,15 @@ const routes = [
     component: Home
   },
   {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "views/About.vue")
-  },
-
-  {
-    path: "/register",
+    path: "/user/register",
     name: "Register",
-    component: () => import("views/Register.vue")
+    component: () => import("views/users/Register")
+  },
+  {
+    path: "/goods/management",
+    name: "GoodsManagement",
+    component: () => import("views/goods/Management"),
+    beforeEnter: (to, from, next) => {}
   }
 ];
 
@@ -34,5 +32,17 @@ const router = new VueRouter({
   routes,
   mode: "history"
 });
+
+// router.beforeEach((to, from, next) => {
+//   //我在这里模仿了一个获取用户信息的方法
+//   let isLogin = window.localStorage.getItem("tokenInfo");
+//   if (isLogin)
+//     //如果用户信息存在则往下执行。
+//     next();
+//   else {
+//     //如果用户token不存在则跳转到login页面
+//     next("/");
+//   }
+// });
 
 export default router;

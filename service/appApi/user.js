@@ -10,6 +10,10 @@ router.get("/", async ctx => {
   ctx.body = "这是用户操作首页";
 });
 
+router.post("/testToken", async ctx => {
+  ctx.body = ctx.request;
+});
+
 router.post("/register", async ctx => {
   ctx.set("Access-Control-Allow-Origin", ctx.request.headers.origin);
   //取得Model
@@ -38,6 +42,7 @@ router.post("/register", async ctx => {
 
 /*登录的实践 */
 router.post("/login", async ctx => {
+  // console.log(ctx.request.body);
   //得到前端传递过来的数据
   let loginUser = ctx.request.body;
   // console.log(loginUser); // 打印前端请求过来的数据
@@ -57,12 +62,13 @@ router.post("/login", async ctx => {
         await newUser
           .comparePassword(password, result.password)
           .then(isMatch => {
-            token = generateToken();
+            token = generateToken(userName);
             ctx.body = { code: 200, message: isMatch, token: token };
           })
           .catch(error => {
             //出现异常，返回异常
-            console.log(error);
+            // console.log(error);
+            // console.log(111);
             ctx.body = { code: 400, message: error }; // 500:出现异常
           });
       } else {
@@ -70,13 +76,13 @@ router.post("/login", async ctx => {
       }
     })
     .catch(error => {
-      console.log(error);
+      // console.log(error);
       ctx.body = { code: 400, message: error }; // 500:出现异常
     });
 });
 
 // 生成token
-function generateToken() {
+function generateToken(userName) {
   let payload = {
     userName,
     time: new Date().getTime(),

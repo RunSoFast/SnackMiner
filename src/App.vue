@@ -13,6 +13,11 @@ export default {
   name: "app",
   components: {
     MainNavBar
+  },created(){
+    // console.log('token',this.$store.state.tokenInfo);
+    if (window.localStorage.tokenInfo==null) {
+      this.$message.error("请登录")
+    }
   }
 };
 </script>
