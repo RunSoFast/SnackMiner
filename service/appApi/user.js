@@ -1,6 +1,9 @@
 const Router = require("koa-router");
 const mongoose = require("mongoose");
-
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const SALT_WORK_FACTOR = 10;
+const secret = "A SECRET"; // 生成和验证token的私钥
 let router = new Router();
 
 router.get("/", async ctx => {
@@ -54,13 +57,13 @@ router.post("/login", async ctx => {
         await newUser
           .comparePassword(password, result.password)
           .then(isMatch => {
-            //返回比对结果
-            ctx.body = { code: 200, message: isMatch }; // 200:用户名正确 密码不一定正确，要看isMatch
+            token = generateToken();
+            ctx.body = { code: 200, message: isMatch, token: token };
           })
           .catch(error => {
             //出现异常，返回异常
             console.log(error);
-            ctx.body = { code: 500, message: error }; // 500:出现异常
+            ctx.body = { code: 400, message: error }; // 500:出现异常
           });
       } else {
         ctx.body = { code: 404, message: "用户名不存在" }; // 404：用户名不存在数据库中
@@ -68,8 +71,19 @@ router.post("/login", async ctx => {
     })
     .catch(error => {
       console.log(error);
-      ctx.body = { code: 500, message: error }; // 500:出现异常
+      ctx.body = { code: 400, message: error }; // 500:出现异常
     });
 });
+
+// 生成token
+function generateToken() {
+  let payload = {
+    userName,
+    time: new Date().getTime(),
+    timeout: 1000 * 60 * 60 * 2
+  };
+  let token = jwt.sign(payload, secret); // 生成token
+  return token;
+}
 
 module.exports = router;

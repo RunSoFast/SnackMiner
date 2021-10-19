@@ -10,7 +10,7 @@
       active-text-color="#ffd04b"
     >
       <el-menu-item index="1" @click="home">首页推荐</el-menu-item>
-      <el-submenu index="2">
+      <!-- <el-submenu index="2">
         <template slot="title">点餐</template>
         <el-menu-item index="2-1">营养早餐</el-menu-item>
         <el-menu-item index="2-2">特色小吃</el-menu-item>
@@ -21,15 +21,18 @@
           <el-menu-item index="2-4-2">醒脑咖啡</el-menu-item>
           <el-menu-item index="2-4-3">面包蛋糕</el-menu-item>
         </el-submenu>
-      </el-submenu>
-      <el-menu-item index="3" disabled>消息中心</el-menu-item>
-      <el-menu-item index="4"
+      </el-submenu> -->
+      <el-menu-item index="2">点餐</el-menu-item>
+      <el-menu-item index="3"
         ><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item
       >
       <span class="right">
         <span v-if="!islogin">
-          <el-menu-item index="5"
-            ><el-button type="text" @click="changeDialogVisible"
+          <el-menu-item index="4"
+            ><el-button
+              type="text"
+              @click="changeDialogVisible"
+              :disabled="isDisabled"
               >登录</el-button
             ></el-menu-item
           >
@@ -114,7 +117,8 @@ export default {
       activeIndex: "1",
       activeIndex2: "1",
       dialogVisible: false,
-      islogin: false
+      islogin: false,
+      isDisabled: false //防止重复点击登录按钮
     };
   },
   methods: {
@@ -137,6 +141,7 @@ export default {
     doLogin() {
       //一点击登录按钮，这个方法就会执行
       // alert(JSON.stringify(this.user)); //可以直接把this.user对象传给后端进行校验用户名和密码
+      this.isDisabled = true;
       axios({
         url: url.login,
         method: "post",
@@ -149,20 +154,36 @@ export default {
           // console.log(response);
           if (response.data.code == 200) {
             if (response.data.message == true) {
-              this.islogin = true;
-              this.dialogVisible = false;
-            }
-            else{
-              alert("用户账号或密码错误");
+              new Promise((resolve, reject) => {
+                // console.log(response.data.token);
+                localStorage.token =  response.data.token;
+                setTimeout(() => {
+                  resolve();
+                }, 500);
+              })
+                .then(() => {
+                  this.$message.success("登陆成功");
+                  this.islogin = true;
+                  this.dialogVisible = false;
+                  this.$router.replace("/").catch(() => {});
+                })
+                .catch(err => {
+                  Toast.fail("登录状态保存失败");
+                  console.log(err);
+                });
+            } else {
+              this.$message.error("用户账号或密码错误");
             }
           } else if (response.data.code == 404) {
-            alert("用户账号或密码错误");
+            this.$message.error("用户账号或密码错误");
           } else {
-            alert("出现异常" + response.data.message);
+            this.$message.error("出现异常" + response.data.message);
           }
+          this.isDisabled = false;
         })
         .catch(error => {
           console.log(error);
+          this.isDisabled = false;
         });
     },
     doRigister() {

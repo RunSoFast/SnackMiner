@@ -96,29 +96,25 @@ export default {
           // console.log(response);
           //如果返回code为200，代表注册成功，我们给用户作alert提示
           if (response.data.code == 200) {
-            alert("注册成功");
+            this.$message.success("注册成功");
             this.$router.replace("/");
           } else {
             // console.log(response.data.message);
-            alert("注册失败，用户名已存在");
+            this.$message.error("注册失败，用户名已存在");
           }
           // console.log(response.data.code);
           this.isDisabled = false;
         })
         .catch(error => {
-          alert("注册失败");
+          this.$message.error("注册失败");
           console.log(error);
           this.isDisabled = false;
         });
     },
     checkForm() {
       let isOk = true;
-      if (this.user.username.length < 4) {
-        alert("用户名不能小于4位");
-        isOk = false;
-      }
-      if (this.user.password.length < 6) {
-        alert("密码不能少于6位");
+      if (this.user.username.length < 4 && this.user.password.length < 6) {
+        this.$message.error("用户名不能小于4位,密码不能少于6位");
         isOk = false;
       }
       return isOk;
