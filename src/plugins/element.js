@@ -18,6 +18,13 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem, 
+  Row,
+  Col,
+  Form,
+  FormItem,
+  Option,
+  Select,
+  Image,
 } from "element-ui";
 
 Vue.use(Button);
@@ -34,3 +41,10 @@ Vue.prototype.$confirm = MessageBox.confirm
 Vue.use(Dropdown);
 Vue.use(DropdownMenu);
 Vue.use(DropdownItem);
+Vue.use(Row);
+Vue.use(Col);
+Vue.use(Form);
+Vue.use(FormItem);
+Vue.use(Option);
+Vue.use(Select);
+Vue.use(Image);

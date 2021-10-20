@@ -17,22 +17,22 @@ export default {
       activeIndex2: "1",
       lubotu: [
         {
-          image: require("assets/img/01.jpg")
+          image: require("assets/img/slideshow/hanbao.png")
         },
         {
-          image: require("assets/img/02.jpg")
+          image: require("assets/img/slideshow/shutiao.png")
         },
         {
-          image: require("assets/img/03.webp")
+          image: require("assets/img/slideshow/tiantong.png")
         },
         {
-          image: require("assets/img/04.webp")
+          image: require("assets/img/slideshow/kele.png")
         },
         {
-          image: require("assets/img/05.webp")
+          image: require("assets/img/slideshow/peigeng.png")
         },
         {
-          image: require("assets/img/06.webp")
+          image: require("assets/img/slideshow/maileji.png")
         }
       ]
     };

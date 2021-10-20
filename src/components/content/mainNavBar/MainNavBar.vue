@@ -2,13 +2,13 @@
   <div>
     <!-- 导航栏 -->
     <el-menu
-      :default-active="activeIndex2"
-      class="el-menu-demo"
       mode="horizontal"
-      background-color="#545c64"
+      background-color="rgb(32, 160, 255)"
       text-color="#fff"
-      active-text-color="#ffd04b"
-    >
+      active-text-color="#ffd04b">
+    <el-menu-item index="0">
+      <img src="~assets/img/logo/restaurantlogo.svg" alt="logo" ></img>
+    </el-menu-item>
       <el-menu-item index="1" @click="home">首页推荐</el-menu-item>
       <!-- <el-submenu index="2">
         <template slot="title">点餐</template>
@@ -35,7 +35,7 @@
             <el-button
               type="text"
               @click="changeDialogVisible"
-              :disabled="isDisabled">登录</el-button>
+              :disabled="isDisabled"><img src="~assets/img/user/login.svg" alt="logo" ></img></el-button>
               </el-menu-item>
         </span>
         <span v-else>
@@ -114,8 +114,6 @@ export default {
         password: "123456"
         //为了登录方便，可以直接在这里写好用户名和密码的值
       },
-      activeIndex: "1",
-      activeIndex2: "1",
       dialogVisible: false,
       islogin: false,
       isDisabled: false, //防止重复点击登录按钮
@@ -214,6 +212,7 @@ export default {
     if (window.localStorage.tokenInfo != null) {
       // this.$message.error("请登录");
       this.islogin = true;
+      this.isgoodsmanage = true;
       this.user.username = window.localStorage.username;
     }
   }
@@ -255,7 +254,7 @@ export default {
 }
 .el-dropdown-link {
   cursor: pointer;
-  color: #409eff;
+  color: #fff;
 }
 .el-icon-arrow-down {
   font-size: 12px;
