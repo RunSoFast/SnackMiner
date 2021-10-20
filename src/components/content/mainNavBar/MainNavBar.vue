@@ -22,43 +22,33 @@
           <el-menu-item index="2-4-3">面包蛋糕</el-menu-item>
         </el-submenu>
       </el-submenu> -->
-      <el-menu-item index="2" @click="$router.push('/management')"
-        >点餐</el-menu-item
-      >
-      <el-menu-item index="3" @click="$router.push('/management')"
-        >购物车</el-menu-item
-      >
+      <el-menu-item index="2" @click="$router.push({ name: 'DietOder' })">点餐</el-menu-item>
+      <el-menu-item index="3" @click="$router.push({ name: 'ShoppingCart' })" >购物车</el-menu-item>
       <el-menu-item
         index="4"
         v-show="isgoodsmanage"
-        @click="$router.push('/management')"
-        >商品后台管理</el-menu-item
-      >
+        @click="$router.push({ name: 'DietManagement' })">商品后台管理</el-menu-item>
 
       <span class="right">
         <span v-if="!islogin">
-          <el-menu-item index="5"
-            ><el-button
+          <el-menu-item index="5">
+            <el-button
               type="text"
               @click="changeDialogVisible"
-              :disabled="isDisabled"
-              >登录</el-button
-            ></el-menu-item
-          >
+              :disabled="isDisabled">登录</el-button>
+              </el-menu-item>
         </span>
         <span v-else>
           <el-menu-item index="6">
             <el-dropdown>
               <span class="el-dropdown-link">
-                {{ user.username
-                }}<i class="el-icon-arrow-down el-icon--right"></i>
+                {{ user.username}}
+                <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>个人中心</el-dropdown-item>
-                <el-dropdown-item>我的订单</el-dropdown-item>
-                <span @click="quitlogin"
-                  ><el-dropdown-item divided>退出</el-dropdown-item></span
-                >
+                <span @click="$router.push({name:'UserProfile'})"><el-dropdown-item >个人中心</el-dropdown-item></span>
+                <span @click="$router.push({name:'DietOder'})"><el-dropdown-item >我的订单</el-dropdown-item></span>             
+                <span @click="quitlogin"><el-dropdown-item divided>退出</el-dropdown-item></span>
               </el-dropdown-menu>
             </el-dropdown>
           </el-menu-item>
@@ -206,7 +196,7 @@ export default {
     },
     doRigister() {
       this.dialogVisible = false;
-      this.$router.push("/user/register");
+      this.$router.push("/user/register").catch(err => {});
     },
     quitlogin() {
       this.islogin = false;
@@ -214,6 +204,9 @@ export default {
       //清空token
       this.$store.commit("del_token", "tokenInfo");
       window.localStorage.removeItem("username");
+      // 退出登录跳转回首页并且刷新当前页面
+      this.$router.replace("/").catch(err => {});
+      this.$router.go(0);
     }
   },
   created() {

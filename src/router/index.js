@@ -6,6 +6,11 @@ import { getItem } from "@/utils/storage";
 
 Vue.use(VueRouter);
 
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err);
+};
+
 const routes = [
   {
     path: "",
@@ -17,14 +22,32 @@ const routes = [
   },
   {
     path: "/user/register",
-    name: "Register",
+    name: "UserRegister",
     component: () => import("views/users/Register")
   },
   {
-    path: "/goods/management",
-    name: "GoodsManagement",
-    component: () => import("views/goods/Management"),
-    beforeEnter: (to, from, next) => {}
+    path: "/user/profile",
+    name: "UserProfile",
+    meta: { requiresAuth: true },
+    component: () => import("views/users/Profile")
+  },
+  {
+    path: "/diet/management",
+    name: "DietManagement",
+    meta: { requiresAuth: true },
+    component: () => import("views/diet/Management.vue")
+  },
+  {
+    path: "/diet/order",
+    name: "DietOder",
+    meta: { requiresAuth: true },
+    component: () => import("views/diet/Oder.vue")
+  },
+  {
+    path: "/diet/shoppingcart",
+    name: "ShoppingCart",
+    meta: { requiresAuth: true },
+    component: () => import("views/diet/ShoppingCart.vue")
   }
 ];
 
@@ -42,6 +65,27 @@ const router = new VueRouter({
 //   else {
 //     //如果用户token不存在则跳转到login页面
 //     next("/");
+//   }
+// });
+
+// //导航守卫，判断是否登录
+// router.beforeEach(async (to, from, next) => {
+//   // to and from are both route objects. must call `next`.
+//   const hasToken = localStorage.getItem("tokenInfo");
+//   if (to.path === "/register" || to.path === "/") next();
+//   if (hasToken) next();
+//   else next("/home");
+// });
+
+//导航守卫，判断是否登录
+// router.beforeEach(async (to, from, next) => {
+//   if(to.meta.requiresAuth)
+//   {
+//     // console.log("需要token");
+//     if(store.state.tokenInfo){
+//       // next()
+//       console.log(store.state.tokenInfo);
+//     }
 //   }
 // });
 

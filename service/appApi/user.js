@@ -15,8 +15,8 @@ router.post("/testToken", async ctx => {
   // 解析token
   token = ctx.request.headers.authorization;
   // ctx.body = token;
-  const a = jwt.verify(token, secret);
-  ctx.body = a
+  // const a = jwt.verify(token, secret);
+  ctx.body = token
 });
 
 router.post("/register", async ctx => {
