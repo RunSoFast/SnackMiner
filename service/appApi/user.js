@@ -11,7 +11,12 @@ router.get("/", async ctx => {
 });
 
 router.post("/testToken", async ctx => {
-  ctx.body = ctx.request;
+  // ctx.body = ctx.request;
+  // 解析token
+  token = ctx.request.headers.authorization;
+  // ctx.body = token;
+  const a = jwt.verify(token, secret);
+  ctx.body = a
 });
 
 router.post("/register", async ctx => {

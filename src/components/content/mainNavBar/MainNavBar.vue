@@ -22,9 +22,18 @@
           <el-menu-item index="2-4-3">面包蛋糕</el-menu-item>
         </el-submenu>
       </el-submenu> -->
-      <el-menu-item index="2" @click="$router.push('/management')">点餐</el-menu-item>
-      <el-menu-item index="3" @click="$router.push('/management')">购物车</el-menu-item>
-      <el-menu-item index="4" v-show="isgoodsmanage" @click="$router.push('/management')">商品后台管理</el-menu-item>
+      <el-menu-item index="2" @click="$router.push('/management')"
+        >点餐</el-menu-item
+      >
+      <el-menu-item index="3" @click="$router.push('/management')"
+        >购物车</el-menu-item
+      >
+      <el-menu-item
+        index="4"
+        v-show="isgoodsmanage"
+        @click="$router.push('/management')"
+        >商品后台管理</el-menu-item
+      >
 
       <span class="right">
         <span v-if="!islogin">
@@ -105,7 +114,7 @@
 <script>
 import axios from "axios";
 import url from "@/serviceAPI.config.js";
-import {removeitem} from '@/utils/storage.js'
+import { removeitem } from "@/utils/storage.js";
 export default {
   name: "MainNavBar",
   data() {
@@ -158,7 +167,7 @@ export default {
             if (response.data.message == true) {
               new Promise((resolve, reject) => {
                 // 保存token到vuex和localstorage中
-                this.$store.commit('mSetTokenInfo', response.data.token)
+                this.$store.commit("mSetTokenInfo", response.data.token);
                 setTimeout(() => {
                   resolve();
                 }, 300);
@@ -167,8 +176,10 @@ export default {
                   this.$message.success("登陆成功");
                   this.islogin = true;
                   this.dialogVisible = false;
+                  // 保存当前登录用户名称
+                  window.localStorage.username = this.user.username;
                   // 只有管理员登录才能在导航栏显示商品后台管理按钮
-                  if (this.user.username!='admin') {
+                  if (this.user.username != "admin") {
                     this.isgoodsmanage = false;
                   } else this.isgoodsmanage = true;
                   // 登陆成功，跳转到主页
@@ -201,7 +212,16 @@ export default {
       this.islogin = false;
       // removeitem("tokenInfo");
       //清空token
-      this.$store.commit('del_token',tokenInfo)
+      this.$store.commit("del_token", "tokenInfo");
+      window.localStorage.removeItem("username");
+    }
+  },
+  created() {
+    // console.log('token',this.$store.state.tokenInfo);
+    if (window.localStorage.tokenInfo != null) {
+      // this.$message.error("请登录");
+      this.islogin = true;
+      this.user.username = window.localStorage.username;
     }
   }
 };
