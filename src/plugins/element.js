@@ -24,7 +24,10 @@ import {
   FormItem,
   Option,
   Select,
+  Table,
+  TableColumn,
   Image,
+  Popover,
 } from "element-ui";
 
 Vue.use(Button);
@@ -48,3 +51,6 @@ Vue.use(FormItem);
 Vue.use(Option);
 Vue.use(Select);
 Vue.use(Image);
+Vue.use(Table);
+Vue.use(TableColumn);
+Vue.use(Popover);

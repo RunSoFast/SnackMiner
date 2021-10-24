@@ -32,7 +32,7 @@ export default {
           image: require("assets/img/slideshow/peigeng.png")
         },
         {
-          image: require("assets/img/slideshow/maileji.png")
+          image: require("assets/img/slideshow/caffe.png")
         }
       ]
     };
