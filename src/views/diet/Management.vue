@@ -107,7 +107,7 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="paginationInfo.currentPage"
-            :page-sizes="[10,20,30,40]"
+            :page-sizes="[10, 20, 30, 40]"
             :page-size="paginationInfo.pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="paginationInfo.total"
@@ -159,12 +159,11 @@ export default {
         //   quantity: 48
         // }
       ],
-      paginationInfo:{
-        currentPage:1,
-        pageSize:30,
-        total:0
-      },
-      
+      paginationInfo: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0
+      }
     };
   },
   methods: {
@@ -184,6 +183,10 @@ export default {
         .then(response => {
           console.log(response);
           this.queryall();
+          this.paginationquery(
+            this.paginationInfo.currentPage,
+            this.paginationInfo.pageSize
+          );
           this.formInline.name = "";
           this.formInline.category = "";
           this.formInline.price = "";
@@ -218,7 +221,7 @@ export default {
           // console.log(response);
           if (response.data.code == 200) this.tableData = response.data.message;
           // console.log(this.tableData);
-          this.paginationInfo.total=this.tableData.length
+          this.paginationInfo.total = this.tableData.length;
         })
         .catch(error => {
           console.log(error);
@@ -238,21 +241,23 @@ export default {
     async handleSizeChange(val) {
       this.paginationInfo.pageSize = val;
       // console.log(`每页 ${val} 条`);
+      // console.log(this.paginationInfo.pageSize)
       // this.queryall();
       // this.tableData = this.tableData.slice(0,val);
-      this.paginationquery(this.paginationInfo.currentPage,val)
+      this.paginationquery(this.paginationInfo.currentPage, val);
     },
     handleCurrentChange(val) {
       // console.log(`当前页: ${val}`);
-      // this.paginationInfo.currentPage = val
-      this.paginationquery(val,this.paginationInfo.pageSize)
+      this.paginationInfo.currentPage = val;
+      // console.log(this.paginationInfo.currentPage)
+      this.paginationquery(val, this.paginationInfo.pageSize);
       // this.tableData
     },
-    paginationquery(currentPage,pageSize){
+    paginationquery(currentPage, pageSize) {
       axios({
         url: url.dietManagementpaginationquery,
         method: "post",
-        data:{
+        data: {
           currentPage,
           pageSize
         }
@@ -271,6 +276,10 @@ export default {
   },
   created() {
     this.queryall();
+    this.paginationquery(
+      this.paginationInfo.currentPage,
+      this.paginationInfo.pageSize
+    );
   }
 };
 </script>
