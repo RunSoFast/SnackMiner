@@ -28,6 +28,7 @@ import {
   TableColumn,
   Image,
   Popover,
+  Pagination,
 } from "element-ui";
 
 Vue.use(Button);
@@ -54,3 +55,4 @@ Vue.use(Image);
 Vue.use(Table);
 Vue.use(TableColumn);
 Vue.use(Popover);
+Vue.use(Pagination);

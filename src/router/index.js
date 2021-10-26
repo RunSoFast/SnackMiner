@@ -55,13 +55,18 @@ const createRouter = () =>
   new VueRouter({
     mode: "history", // require service support
     // scrollBehavior: () => ({ y: 0 }),
-    scrollBehavior (to, from, savedPosition) {
-      return { x: 0, y: 0 }
+    scrollBehavior(to, from, savedPosition) {
+      return { x: 0, y: 0 };
     },
     routes: routes
   });
 
 const router = createRouter();
+
+router.beforeEach((to, from, next) => {
+  // console.log(111);
+  next();
+});
 
 // router.beforeEach((to, from, next) => {
 //   //我在这里模仿了一个获取用户信息的方法
@@ -98,8 +103,8 @@ const router = createRouter();
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  const newRouter = createRouter();
+  router.matcher = newRouter.matcher; // reset router
 }
 
 export default router;

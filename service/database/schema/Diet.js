@@ -6,7 +6,9 @@ let ObjectId = Schema.Types.ObjectId; //声明Object类型
 const dietSchema = new Schema(
   {
     Id: ObjectId,
-    Name: { unique: true, type: String },
+    name: { unique: true, type: String },
+    category:String,
+    imageurl:String,
     price: Number,
     quantity:Number
   },
@@ -14,6 +16,12 @@ const dietSchema = new Schema(
     collection: "diet"
   }
 );
+
+//每次存储数据时都要执行
+dietSchema.pre("save", function(next) {
+  console.log(this);
+  next()
+});
 
 //发布模型,是具备某张表操作能力的一个集合
 mongoose.model("Diet", dietSchema);
