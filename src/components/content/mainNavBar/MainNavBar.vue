@@ -212,8 +212,10 @@ export default {
     if (window.localStorage.tokenInfo != null) {
       // this.$message.error("请登录");
       this.islogin = true;
-      this.isgoodsmanage = true;
       this.user.username = window.localStorage.username;
+      if(window.localStorage.username=='admin'){
+              this.isgoodsmanage = true;
+      }
     }
   }
 };

@@ -9,7 +9,7 @@
               </el-input>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="onSubmit">查询</el-button>
+              <el-button type="primary" @click="querysingle">查询</el-button>
               <el-button type="primary" @click="queryall">恢复默认</el-button>
               <!-- <el-button @click="setCurrent()">取消选择</el-button> -->
             </el-form-item>
@@ -79,6 +79,12 @@
               </template>
             </el-table-column>
             <el-table-column
+              prop="category"
+              label="类别"
+              sortable
+            >
+            </el-table-column>
+            <el-table-column
               prop="price"
               label="价格"
               :formatter="formatter"
@@ -87,17 +93,15 @@
             </el-table-column>
             <el-table-column prop="quantity" label="剩余数量" sortable>
             </el-table-column>
-            <el-table-column label="图片" width="180">
+            <el-table-column label="操作" width="180">
               <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  @click="handleEdit(scope.$index, scope.row)"
+                <el-button size="mini" @click="handleEdit(scope.row)"
                   >编辑</el-button
                 >
                 <el-button
                   size="mini"
                   type="danger"
-                  @click="handleDelete(scope.$index, scope.row)"
+                  @click="handleDelete(scope.row.name)"
                   >删除</el-button
                 >
               </template>
@@ -116,6 +120,40 @@
         </el-card>
       </el-col>
     </el-row>
+    <el-dialog
+      title="编辑商品信息"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <el-form
+        :inline="true"
+        :model="formInline"
+        class="demo-form-inline"
+        ref="singleform"
+      >
+        <el-form-item label="商品名称:">
+          <el-input v-model="editformInline.name" placeholder="商品名称" disabled>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="商品类别:">
+          <el-input v-model="editformInline.category" placeholder="商品类别">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="价格:">
+          <el-input v-model="editformInline.price" placeholder="价格">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="剩余数量:">
+          <el-input v-model="editformInline.quantity" placeholder="剩余数量">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editone">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -129,6 +167,13 @@ export default {
         queryname: "",
         name: "",
         category: "",
+        imageurl: require("assets/img/diet/default.png"),
+        price: "",
+        quantity: ""
+      },
+      editformInline: {
+        name: "",
+        category: "汉堡",
         imageurl: require("assets/img/diet/default.png"),
         price: "",
         quantity: ""
@@ -163,7 +208,8 @@ export default {
         currentPage: 1,
         pageSize: 10,
         total: 0
-      }
+      },
+      dialogVisible: false
     };
   },
   methods: {
@@ -206,11 +252,33 @@ export default {
     formatter(row, column) {
       return row.price + 1;
     },
-    handleEdit(index, row) {
-      console.log(index, row);
+    handleEdit(row) {
+      // console.log(index, row);
+      this.dialogVisible = true;
+      this.editformInline.name = row.name;
+      this.editformInline.price= row.price,
+      this.editformInline.quantity=row.quantity
     },
-    handleDelete(index, row) {
-      console.log(index, row);
+    handleDelete(name) {
+      // console.log(name);
+      axios({
+        url: url.dietManagementdelone,
+        method: "post",
+        data: {
+          name
+        }
+      })
+        .then(response => {
+          // console.log(response);
+          this.queryall();
+          this.paginationquery(
+            this.paginationInfo.currentPage,
+            this.paginationInfo.pageSize
+          );
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     queryall() {
       axios({
@@ -247,8 +315,10 @@ export default {
       this.paginationquery(this.paginationInfo.currentPage, val);
     },
     handleCurrentChange(val) {
+      // console.log(1111);
+      // console.log(val);
       // console.log(`当前页: ${val}`);
-      this.paginationInfo.currentPage = val;
+      this.paginationInfo.currentPage = new Number(val);
       // console.log(this.paginationInfo.currentPage)
       this.paginationquery(val, this.paginationInfo.pageSize);
       // this.tableData
@@ -271,6 +341,62 @@ export default {
         })
         .catch(error => {
           console.log(error);
+        });
+    },
+    querysingle() {
+      axios({
+        url: url.dietManagementsinglequery,
+        method: "post",
+        data: {
+          queryname: this.formInline.queryname
+        }
+      })
+        .then(response => {
+          console.log(response);
+          this.tableData = [];
+          this.tableData.push(response.data.message);
+          //  console.log(this.tableData);
+        })
+        .catch(err => {
+          // console.log(1111);
+          console.log(err);
+          this.$message.error("该商品不存在");
+        });
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
+    },
+    editone() {
+      axios({
+        url: url.dietManagementeditone,
+        method: "post",
+        data: {
+          name: this.editformInline.name,
+          price: this.editformInline.price,
+          category: "汉堡",
+          quantity: this.editformInline.quantity
+        }
+      })
+        .then(response => {
+          this.dialogVisible = false;
+          console.log(response);
+          //  console.log(this.tableData);
+          this.queryall();
+          this.paginationquery(
+            this.paginationInfo.currentPage,
+            this.paginationInfo.pageSize
+          );
+
+          (this.editformInline.price = ""), (this.editformInline.quantity = "");
+        })
+        .catch(err => {
+          // console.log(1111);
+          console.log(err);
+          this.$message.error("该商品不存在");
         });
     }
   },

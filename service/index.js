@@ -6,6 +6,8 @@ const Router = require("koa-router");
 const { connect, initSchemas } = require("./database/init.js");
 let user = require("./appApi/user.js");
 let diet = require("./appApi/diet.js");
+let shoppingcart = require("./appApi/shoppingCart.js");
+
 (async () => {
   await connect();
   initSchemas();
@@ -22,6 +24,7 @@ app.use(bodyParser());
 let router = new Router();
 router.use("/user", user.routes());
 router.use("/diet", diet.routes());
+router.use("/shoppingCart", shoppingcart.routes());
 // 4.加载路由中间件
 app.use(router.routes()); //注册路由中间件
 app.use(router.allowedMethods()); // 当有不被允许的方法的请求时，默认响应结果和设置状态码

@@ -42,13 +42,70 @@ router.post("/management/paginationquery", async ctx => {
   try {
     // console.log(ctx.request.body);
     let queryInfo = ctx.request.body;
-    currentPage = queryInfo.currentPage
-    pageSize = queryInfo.pageSize
+    currentPage = queryInfo.currentPage;
+    pageSize = queryInfo.pageSize;
     const Diet = mongoose.model("Diet");
     // let result = await Diet.find().exec();
     // let result = await Diet.find().skip(pageSize*currentPage-pageSize).limit(pageSize).sort({'_id':-1}).exec();
-    let result = await Diet.find().skip(pageSize*currentPage-pageSize).limit(pageSize).exec();
+    let result = await Diet.find()
+      .skip(pageSize * currentPage - pageSize)
+      .limit(pageSize)
+      .exec();
     ctx.body = { code: 200, message: result };
+  } catch (err) {
+    ctx.body = { code: 500, message: err };
+  }
+});
+
+// 查询单个商品
+router.post("/management/singlequery", async ctx => {
+  try {
+    // console.log(ctx.request.body);
+    let queryInfo = ctx.request.body;
+    let queryname = queryInfo.queryname;
+    const Diet = mongoose.model("Diet");
+    let result = await Diet.findOne({ name: queryname }).exec();
+    ctx.body = { code: 200, message: result };
+  } catch (err) {
+    ctx.body = { code: 500, message: err };
+  }
+});
+
+// 删除单个商品
+router.post("/management/delone", async ctx => {
+  try {
+    // console.log(ctx.request.body);
+    let queryInfo = ctx.request.body;
+    let name = queryInfo.name;
+    const Diet = mongoose.model("Diet");
+    let result = await Diet.deleteOne({ name: name }).exec();
+    ctx.body = { code: 200, message: result };
+  } catch (err) {
+    ctx.body = { code: 500, message: err };
+  }
+});
+
+// 编辑单个商品
+router.post("/management/editone", async ctx => {
+  try {
+    console.log(ctx.request.body);
+    let queryInfo = ctx.request.body;
+    let name = queryInfo.name;
+    const Diet = mongoose.model("Diet");
+    await Diet.findOneAndUpdate(
+      { name: name },
+      {
+        $set: {
+          price: queryInfo.price,
+          quantity: queryInfo.quantity
+        }
+      }
+    )
+      .exec()
+      .then(res => {
+        console.log(res);
+        ctx.body = { code: 200, message: res };
+      });
   } catch (err) {
     ctx.body = { code: 500, message: err };
   }
