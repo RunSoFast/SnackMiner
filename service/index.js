@@ -7,7 +7,9 @@ const { connect, initSchemas } = require("./database/init.js");
 let user = require("./appApi/user.js");
 let diet = require("./appApi/diet.js");
 let shoppingcart = require("./appApi/shoppingCart.js");
+let testToken = require("./appApi/tokenTest.js");
 
+//立即执行函数
 (async () => {
   await connect();
   initSchemas();
@@ -25,6 +27,8 @@ let router = new Router();
 router.use("/user", user.routes());
 router.use("/diet", diet.routes());
 router.use("/shoppingCart", shoppingcart.routes());
+router.use("/shoppingCart", shoppingcart.routes());
+router.use(testToken.routes());
 // 4.加载路由中间件
 app.use(router.routes()); //注册路由中间件
 app.use(router.allowedMethods()); // 当有不被允许的方法的请求时，默认响应结果和设置状态码

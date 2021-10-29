@@ -174,7 +174,7 @@ export default {
                   this.$router.replace("/").catch(() => {});
                 })
                 .catch(err => {
-                  Toast.fail("登录状态保存失败");
+                  this.$message.error("登录状态保存失败");
                   console.log(err);
                 });
             } else {

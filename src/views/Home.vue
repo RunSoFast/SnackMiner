@@ -8,7 +8,7 @@
     </el-carousel>
 
   <el-row>
-    <el-col :span="3" v-for="(item, index) in cardContent" :key="item.index" :offset="index > 0 ? 1 : 0">
+    <el-col :span="3" v-for="(item, index) in cardContent" :key="item.index" :offset="index > 0 ? 1 : 0" style="margin: 38px;">
       <el-card :body-style="{ padding: '0px' }">
         <img :src="item.imageurl" class="image">
         <div style="padding: 14px;">

@@ -42,8 +42,8 @@ router.post("/management/paginationquery", async ctx => {
   try {
     // console.log(ctx.request.body);
     let queryInfo = ctx.request.body;
-    currentPage = queryInfo.currentPage;
-    pageSize = queryInfo.pageSize;
+    let currentPage = queryInfo.currentPage;
+    let pageSize = queryInfo.pageSize;
     const Diet = mongoose.model("Diet");
     // let result = await Diet.find().exec();
     // let result = await Diet.find().skip(pageSize*currentPage-pageSize).limit(pageSize).sort({'_id':-1}).exec();
@@ -59,16 +59,19 @@ router.post("/management/paginationquery", async ctx => {
 
 // 查询单个商品
 router.post("/management/singlequery", async ctx => {
-  try {
-    // console.log(ctx.request.body);
-    let queryInfo = ctx.request.body;
-    let queryname = queryInfo.queryname;
-    const Diet = mongoose.model("Diet");
-    let result = await Diet.findOne({ name: queryname }).exec();
-    ctx.body = { code: 200, message: result };
-  } catch (err) {
-    ctx.body = { code: 500, message: err };
-  }
+  console.log(ctx.request.body);
+  let queryInfo = ctx.request.body;
+  let queryname = queryInfo.queryname;
+  const Diet = mongoose.model("Diet");
+  await Diet.findOne({ name: queryname })
+    .exec()
+    .then(res => {
+      console.log(res);
+      ctx.body = { code: 200, message: res };
+    })
+    .catch(err => {
+      ctx.body = { code: 500, message: err };
+    });
 });
 
 // 删除单个商品

@@ -14,6 +14,7 @@ export default new Vuex.Store({
   mutations: {
     mSetTokenInfo (state, tokenObj) {
       state.tokenInfo = tokenObj
+      console.log(state.tokenInfo);
       // 因为刷新会丢失所以进行持久化 调用storage文件里方法
       setItem('tokenInfo', tokenObj)
     },

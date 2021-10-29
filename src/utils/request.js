@@ -36,32 +36,5 @@ instance.interceptors.request.use(
   }
 );
 
-//respone拦截器
-// service.interceptors.response.use(
-//   response => {
-//       // 在status正确的情况下，code不正确则返回对应的错误信息（后台自定义为200是正确，并且将错误信息写在message），正确则返回响应
-//       return response.data.code == 200 ? response : Promise.reject(response.data.message);
-//   },
-//   error => { 
-//       // 在status不正确的情况下，判别status状态码给出对应响应
-//       if (error.response) {
-//           console.log("在respone拦截器显示错误：", error.response)
-//           switch (error.response.status) {
-//               case 401:
-//                   //可能是token过期，清除它
-//                   // this.$store.commit("del_token"); 
-//                   store.commit("del_token");
-
-//                   // router.replace({ //跳转到登录页面
-//                   //     path: '/login',
-//                   //      // 将跳转的路由path作为参数，登录成功后跳转到该路由
-//                   //     query: { redirect: router.currentRoute.fullPath }
-//                   // });
-                
-//                 }
-//       }
-//       return Promise.reject(error.response.data);
-//   }
-// );
 
 export default instance;

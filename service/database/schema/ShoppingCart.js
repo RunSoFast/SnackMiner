@@ -7,7 +7,7 @@ const shoppingCartSchema = new Schema(
     {
       Id: ObjectId,
       username:String,
-      name: { unique: true, type: String },
+      name: String ,
       category:String,
       imageurl:String,
       price: Number,

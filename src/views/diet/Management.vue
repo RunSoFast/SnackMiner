@@ -78,11 +78,7 @@
                 </el-popover>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="category"
-              label="类别"
-              sortable
-            >
+            <el-table-column prop="category" label="类别" sortable>
             </el-table-column>
             <el-table-column
               prop="price"
@@ -133,7 +129,11 @@
         ref="singleform"
       >
         <el-form-item label="商品名称:">
-          <el-input v-model="editformInline.name" placeholder="商品名称" disabled>
+          <el-input
+            v-model="editformInline.name"
+            placeholder="商品名称"
+            disabled
+          >
           </el-input>
         </el-form-item>
         <el-form-item label="商品类别:">
@@ -256,8 +256,8 @@ export default {
       // console.log(index, row);
       this.dialogVisible = true;
       this.editformInline.name = row.name;
-      this.editformInline.price= row.price,
-      this.editformInline.quantity=row.quantity
+      (this.editformInline.price = row.price),
+        (this.editformInline.quantity = row.quantity);
     },
     handleDelete(name) {
       // console.log(name);
@@ -352,15 +352,15 @@ export default {
         }
       })
         .then(response => {
-          console.log(response);
-          this.tableData = [];
-          this.tableData.push(response.data.message);
-          //  console.log(this.tableData);
+          if (response.data.code == 200 && response.data.message) {
+            this.tableData = [];
+            this.tableData.push(response.data.message);
+          }else{
+            this.$message.error("该商品不存在");
+          }
         })
         .catch(err => {
-          // console.log(1111);
-          console.log(err);
-          this.$message.error("该商品不存在");
+          console.log(err);        
         });
     },
     handleClose(done) {
