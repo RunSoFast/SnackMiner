@@ -37,57 +37,6 @@ router.post("/register", async ctx => {
     });
 });
 
-/*登录的实践 */
-// router.post("/login", async ctx => {
-//   // console.log(ctx.request.body);
-//   //得到前端传递过来的数据
-//   let loginUser = ctx.request.body;
-//   // console.log(loginUser); // 打印前端请求过来的数据
-//   let userName = loginUser.userName;
-//   let password = loginUser.password;
-//   //引入User的model
-//   const User = mongoose.model("User");
-//   //查找用户名是否存在，如果存在开始比对密码
-//   await User.findOne({ userName: userName })
-//     .exec()
-//     .then(async result => {
-//       // console.log(result);// 得到查询到的用户名对应的记录，查询不到返回空
-//       if (result) {
-//         //console.log(User)
-//         //当用户名存在时，开始比对密码
-//         let newUser = new User(); //因为是实例方法，所以要new出对象，才能调用
-//         await newUser
-//           .comparePassword(password, result.password)
-//           .then(isMatch => {
-//             token = generateToken(userName);
-//             console.log(token);
-//             ctx.body = { code: 200, message: isMatch, token: token };
-//           })
-//           .catch(error => {
-//             //出现异常，返回异常
-//             // console.log(error);
-//             // console.log(111);
-//             ctx.body = { code: 400, message: error }; // 500:出现异常
-//           });
-//       } else {
-//         ctx.body = { code: 404, message: "用户名不存在" }; // 404：用户名不存在数据库中
-//       }
-//     })
-//     .catch(error => {
-//       // console.log(error);
-//       ctx.body = { code: 400, message: error }; // 500:出现异常
-//     });
-// });
-
-// // 生成token
-// function generateToken(userName) {
-//   let payload = {
-//     userName
-//   };
-//   let token = jwt.sign(payload, secret); // 生成token
-//   return token;
-// }
-
 // RS256非对称加密
 // 登录
 router.post("/login", async ctx => {
@@ -112,7 +61,7 @@ router.post("/login", async ctx => {
           .comparePassword(password, result.password)
           .then(isMatch => {
             token = generateToken(userName);
-            console.log(token);
+            // console.log(token);
             ctx.body = { code: 200, message: isMatch, token: token };
           })
           .catch(error => {
@@ -151,7 +100,7 @@ function generateToken(userName) {
   const tokenRS256 = jwt.sign(payload, privateKey, { algorithm: 'RS256' })
   
   // 输出签发的 Token
-  console.log('RS256 算法：', tokenRS256)
+  // console.log('RS256 算法：', tokenRS256)
   return tokenRS256;
 }
 

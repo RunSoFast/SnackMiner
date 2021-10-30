@@ -46,8 +46,7 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <span @click="$router.push({name:'UserProfile'})"><el-dropdown-item >个人中心</el-dropdown-item></span>
-                <span @click="$router.push({name:'DietOder'})"><el-dropdown-item >我的订单</el-dropdown-item></span>             
+                <span @click="$router.push({name:'UserProfile'})"><el-dropdown-item >个人中心</el-dropdown-item></span>            
                 <span @click="quitlogin"><el-dropdown-item divided>退出</el-dropdown-item></span>
               </el-dropdown-menu>
             </el-dropdown>
@@ -60,7 +59,6 @@
       title="登录"
       :visible.sync="dialogVisible"
       width="30%"
-      :before-close="handleClose"
     >
       <div>
         <table>
@@ -104,7 +102,6 @@
 <script>
 import axios from "axios";
 import url from "@/serviceAPI.config.js";
-import { removeitem } from "@/utils/storage.js";
 export default {
   name: "MainNavBar",
   data() {
@@ -127,13 +124,13 @@ export default {
     home() {
       this.$router.push("/").catch(err => {});
     },
-    handleClose(done) {
-      this.$confirm("确认关闭？")
-        .then(_ => {
-          done();
-        })
-        .catch(_ => {});
-    },
+    // handleClose(done) {
+    //   this.$confirm("确认关闭？")
+    //     .then(_ => {
+    //       done();
+    //     })
+    //     .catch(_ => {});
+    // },
     changeDialogVisible() {
       this.dialogVisible = true;
     },
@@ -165,7 +162,7 @@ export default {
                   this.islogin = true;
                   this.dialogVisible = false;
                   // 保存当前登录用户名称
-                  window.localStorage.username = this.user.username;
+                  // window.localStorage.username = this.user.username;
                   // 只有管理员登录才能在导航栏显示商品后台管理按钮
                   if (this.user.username != "admin") {
                     this.isgoodsmanage = false;
@@ -198,25 +195,30 @@ export default {
     },
     quitlogin() {
       this.islogin = false;
-      // removeitem("tokenInfo");
       //清空token
       this.$store.commit("del_token", "tokenInfo");
-      window.localStorage.removeItem("username");
       // 退出登录跳转回首页并且刷新当前页面
       this.$router.replace("/").catch(err => {});
       this.$router.go(0);
     }
   },
   created() {
-    // console.log('token',this.$store.state.tokenInfo);
-    if (window.localStorage.tokenInfo != null) {
-      // this.$message.error("请登录");
-      this.islogin = true;
-      this.user.username = window.localStorage.username;
-      if(window.localStorage.username=='admin'){
-              this.isgoodsmanage = true;
-      }
-    }
+    axios({
+      url:url.verifyToken,
+      method:"post"
+    }).then(res=>{
+      if(res.data.code==200){
+        this.islogin=true;
+        this.user.username=res.data.message.userName;
+        if(res.data.message.admin==true){
+          this.isgoodsmanage=true;
+        }
+      }else(
+        this.$message.error("请登录")
+      )
+    }).catch(err=>{
+        console.log(err);
+    })
   }
 };
 </script>

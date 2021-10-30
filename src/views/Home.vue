@@ -7,20 +7,28 @@
       </el-carousel-item>
     </el-carousel>
 
-  <el-row>
-    <el-col :span="3" v-for="(item, index) in cardContent" :key="item.index" :offset="index > 0 ? 1 : 0" style="margin: 38px;">
-      <el-card :body-style="{ padding: '0px' }">
-        <img :src="item.imageurl" class="image">
-        <div style="padding: 14px;">
-          <span>{{item.name}}</span>
-          <div class="bottom clearfix">
-            <p class="time">{{ item.price }}元</p>
-            <el-button type="text" class="button" @click="buyIt(item)">加入购物车</el-button>
+    <el-row>
+      <el-col
+        :span="3"
+        v-for="(item, index) in cardContent"
+        :key="item.index"
+        :offset="index > 0 ? 1 : 0"
+        style="margin: 38px;"
+      >
+        <el-card :body-style="{ padding: '0px' }">
+          <img :src="item.imageurl" class="image" />
+          <div style="padding: 14px;">
+            <span>{{ item.name }}</span>
+            <div class="bottom clearfix">
+              <p class="time">{{ item.price }}元</p>
+              <el-button type="text" class="button" @click="buyIt(item)"
+                >加入购物车</el-button
+              >
+            </div>
           </div>
-        </div>
-      </el-card>
-    </el-col>
-  </el-row>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -51,48 +59,64 @@ export default {
           image: require("assets/img/slideshow/caffe.png")
         }
       ],
-      cardContent: [],
+      cardContent: []
     };
   },
-  methods:{
+  methods: {
     initCard() {
       axios({
         url: url.dietManagementdefaultquery,
         method: "get"
       })
         .then(response => {
-          // console.log(response);
-          if (response.data.code == 200) this.cardContent = response.data.message;
-          console.log(this.cardContent);
+          if (response.data.code == 200)
+            this.cardContent = response.data.message;
         })
         .catch(error => {
           console.log(error);
         });
     },
     buyIt(item) {
-      // console.log("submit!");
       axios({
-        url: url.shoppingCartAdd,
-        method: "post",
-        data: {
-          username: window.localStorage.username,
-          name: item.name,
-          category: item.category,
-          price: item.price,
-          imageurl: item.imageurl,
-          quantity: item.quantity
-        }
+        url: url.verifyToken,
+        method: "post"
       })
-        .then(response => {
-          console.log(response);
+        .then(res => {
+          if (res.data.code == 200) {
+            axios({
+              url: url.shoppingCartAdd,
+              method: "post",
+              data: {
+                username: window.localStorage.username,
+                name: item.name,
+                category: item.category,
+                price: item.price,
+                imageurl: item.imageurl,
+                quantity: item.quantity
+              }
+            })
+              .then(response => {
+                if (response.data.code == 200) {
+                  this.$message.success("商品添加购物车成功");
+                } else {
+                  this.$message.error("商品添加购物车失败");
+                }
+              })
+              .catch(error => {
+                console.log(error);
+                this.$message.error("出现异常");
+              });
+          } else {
+            this.$message.error("token验证未通过，请登录");
+          }
         })
-        .catch(error => {
-          console.log(error);
+        .catch(err => {
+          console.log(err);
         });
-    },
+    }
   },
-  created(){
-    this.initCard()
+  created() {
+    this.initCard();
   }
 };
 </script>
@@ -114,34 +138,34 @@ export default {
   min-height: 100%;
   transform: translate(-50%, -50%);
 }
- .time {
-    font-size: 13px;
-    color: #999;
-  }
-  
-  .bottom {
-    margin-top: 13px;
-    line-height: 12px;
-  }
+.time {
+  font-size: 13px;
+  color: #999;
+}
 
-  .button {
-    padding: 0;
-    float: right;
-  }
+.bottom {
+  margin-top: 13px;
+  line-height: 12px;
+}
 
-  .image {
-    width: 100%;
-    height: 195px;
-    display: block;
-  }
+.button {
+  padding: 0;
+  float: right;
+}
 
-  .clearfix:before,
-  .clearfix:after {
-      display: table;
-      content: "";
-  }
-  
-  .clearfix:after {
-      clear: both
-  }
+.image {
+  width: 100%;
+  height: 195px;
+  display: block;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+
+.clearfix:after {
+  clear: both;
+}
 </style>
