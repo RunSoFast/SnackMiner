@@ -29,7 +29,7 @@ router.post("/add", async ctx => {
 // (默认)查询所有商品
 router.get("/queryAll/:username", async ctx => {
   try {
-    // console.log(ctx.request.params);
+    console.log(ctx.request.params);
     const ShoppingCart = mongoose.model("ShoppingCart");
     let result = await ShoppingCart.find({
       username: ctx.request.params.username

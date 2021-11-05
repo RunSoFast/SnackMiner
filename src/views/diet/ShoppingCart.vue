@@ -219,6 +219,7 @@ export default {
     },
     queryall() {
       // console.log(1111);
+      let username = this.$store.username
       axios({
         url: url.shoppingCartQueryAll + "/" + window.localStorage.username,
         method: "get"

@@ -13,14 +13,24 @@ module.exports = {
         common: "@/common",
         components: "@/components",
         network: "@/network",
-        views: "@/views",
+        views: "@/views"
 
         // 'router': "@/router",
         // 'store': "@/store"
         // 不需要写这2个，因为router和store只在main.js中引入，其他地方可以通过this.$router和this.$store获取相应实例
-      },
+      }
     },
-  },
+    //警告 webpack 的性能提示
+    performance: {
+      hints: "warning",
+      //入口起点的最大体积
+      maxEntrypointSize: 50000000,
+      //生成文件的最大体积
+      maxAssetSize: 30000000,
+      //只给出 js 文件的性能提示
+      assetFilter: function(assetFilename) {
+        return assetFilename.endsWith(".js");
+      }
+    }
+  }
 };
-
-

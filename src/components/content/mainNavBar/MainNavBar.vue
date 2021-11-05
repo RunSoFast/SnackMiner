@@ -153,6 +153,7 @@ export default {
               new Promise((resolve, reject) => {
                 // 保存token到vuex和localstorage中
                 this.$store.commit("mSetTokenInfo", response.data.token);
+                window.localStorage.username = this.user.username
                 setTimeout(() => {
                   resolve();
                 }, 300);
